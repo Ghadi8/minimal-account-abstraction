@@ -62,9 +62,9 @@ contract MinimalAccountTest is Test {
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
 
         PackedUserOperation memory packedUserOperation =
-            sendPackedUserOp.generateUserOperation(executeData, config, address(minimalAccount));
+            sendPackedUserOp.generateSignedUserOperation(executeData, config, address(minimalAccount));
 
-        bytes32 userOperationHash = IEntryPoint(config.entrypoint).getUserOpHash(packedUserOperation);
+        bytes32 userOperationHash = IEntryPoint(config.entryPoint).getUserOpHash(packedUserOperation);
 
         address signer = ECDSA.recover(userOperationHash.toEthSignedMessageHash(), packedUserOperation.signature);
 
@@ -82,9 +82,9 @@ contract MinimalAccountTest is Test {
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
 
         PackedUserOperation memory packedUserOperation =
-            sendPackedUserOp.generateUserOperation(executeData, config, address(minimalAccount));
+            sendPackedUserOp.generateSignedUserOperation(executeData, config, address(minimalAccount));
 
-        bytes32 userOperationHash = IEntryPoint(config.entrypoint).getUserOpHash(packedUserOperation);
+        bytes32 userOperationHash = IEntryPoint(config.entryPoint).getUserOpHash(packedUserOperation);
 
         uint256 missingAccountFuns = 1e18;
 
@@ -108,9 +108,7 @@ contract MinimalAccountTest is Test {
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
 
         PackedUserOperation memory packedUserOperation =
-            sendPackedUserOp.generateUserOperation(executeData, config, address(minimalAccount));
-
-        bytes32 userOperationHash = IEntryPoint(config.entrypoint).getUserOpHash(packedUserOperation);
+            sendPackedUserOp.generateSignedUserOperation(executeData, config, address(minimalAccount));
 
         vm.deal(address(minimalAccount), 1e18);
 
@@ -118,7 +116,7 @@ contract MinimalAccountTest is Test {
         ops[0] = packedUserOperation;
 
         vm.prank(USER);
-        IEntryPoint(config.entrypoint).handleOps(ops, payable(USER));
+        IEntryPoint(config.entryPoint).handleOps(ops, payable(USER));
 
         assertEq(usdc.balanceOf(address(minimalAccount)), 100);
     }
